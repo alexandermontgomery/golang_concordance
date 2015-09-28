@@ -31,6 +31,7 @@ Currently the application only receives input from stdin. The tool to pipe the t
 
 # Roadmap
 * Consider parallelizing the processing of strings using a concurrency framework
+* Build in a mechanism to better manage memory. Most likely use some sort of data store such as Redis to hold concordance calculations while building a Concordance for extremely large texts.
 * Allow the various parsing regexes to be configured at runtime via command line arguments
 * I used a regex for this. I generally do not like to use regexes because at times their behavior can be confusing. With more time I would have further tested and honed the regexes, and considered finding a development strategy that does not use a regex
 * I would increase usability by allowing a handful of different places to specify the input text. Most likely, a file, a resource URL, as well as the command line.
