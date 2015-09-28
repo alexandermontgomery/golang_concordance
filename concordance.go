@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -20,7 +21,7 @@ const WHITESPACE_REGEX string = "\\s+"
  */
 type Word struct {
 	Count      uint32 // It is possible that a word occurs multiple times in the same sentences
-	Occurences map[uint32]*Sentence
+	Occurences []uint32
 	Value      string
 }
 
@@ -56,11 +57,12 @@ func BuildConcordance(sentence []*Sentence) *Concordance {
 func ProcessSentence(concordance *Concordance, sentence *Sentence) {
 	words := GetSentenceWords(sentence)
 	for _, word := range words {
+		word = strings.ToLower(word)
 		if _, exists := concordance.Words[word]; !exists {
-			concordance.Words[word] = &Word{0, make(map[uint32]*Sentence), word}
+			concordance.Words[word] = &Word{0, make([]uint32, 0), word}
 		}
 		concordance.Words[word].Count += 1
-		concordance.Words[word].Occurences[sentence.Position] = sentence
+		concordance.Words[word].Occurences = append(concordance.Words[word].Occurences, sentence.Position)
 	}
 }
 
@@ -159,6 +161,13 @@ func main() {
 	for _, wordKey := range keysSorted {
 		word := concordance.Words[wordKey]
 		fmt.Fprintf(os.Stdout, "%s\n", word.Value)
-		fmt.Fprintf(os.Stdout, "\tCount: %d\n", word.Count)
+		fmt.Fprintf(os.Stdout, "  Count: %d\n", word.Count)
+		occurencesDisplay := make([]string, len(word.Occurences))
+		for j, occurence := range word.Occurences {
+			// Increment occurence so it is not 0 based on display, also convert to string
+			occurencesDisplay[j] = strconv.Itoa(int(occurence) + 1)
+		}
+		sort.Strings(occurencesDisplay)
+		fmt.Fprintf(os.Stdout, "  Occurences: %s\n", strings.Join(occurencesDisplay, ","))
 	}
 }
