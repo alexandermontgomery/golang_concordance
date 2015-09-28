@@ -71,7 +71,7 @@ func TestBuildConcordance(t *testing.T) {
 		t.Fail()
 	}
 
-	if concordance.Words["Golang's"].Count != 1 {
+	if concordance.Words["golang's"].Count != 1 {
 		t.Fail()
 	}
 
